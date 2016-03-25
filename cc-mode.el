@@ -600,6 +600,7 @@ that requires a literal mode spec at compile time."
 				     (not (string-equal c-indentation-style
 							style)))))))
   (c-setup-paragraph-variables)
+  (c-make-noise-macro-regexps)
 
   ;; we have to do something special for c-offsets-alist so that the
   ;; buffer local value has its own alist structure.
@@ -1460,7 +1461,6 @@ Key bindings:
 	abbrev-mode t)
   (use-local-map c-mode-map)
   (c-init-language-vars-for 'c-mode)
-  (c-make-noise-macro-regexps)
   (c-make-macro-with-semi-re) ; matches macro names whose expansion ends with ;
   (c-common-init 'c-mode)
   (easy-menu-add c-c-menu)
@@ -1525,7 +1525,6 @@ Key bindings:
 	abbrev-mode t)
   (use-local-map c++-mode-map)
   (c-init-language-vars-for 'c++-mode)
-  (c-make-noise-macro-regexps)
   (c-make-macro-with-semi-re) ; matches macro names whose expansion ends with ;
   (c-common-init 'c++-mode)
   (easy-menu-add c-c++-menu)
@@ -1588,7 +1587,6 @@ Key bindings:
 	abbrev-mode t)
   (use-local-map objc-mode-map)
   (c-init-language-vars-for 'objc-mode)
-  (c-make-noise-macro-regexps)
   (c-make-macro-with-semi-re) ; matches macro names whose expansion ends with ;
   (c-common-init 'objc-mode)
   (easy-menu-add c-objc-menu)
