@@ -18,11 +18,11 @@
 
 (4 typ) (6 reg) (9 var) (11 reg) (14 con) (18 reg)
 (14 con) (18 reg)
-(14 con) (18 reg)
+(4 typ) (6 reg) (9 var) (11 reg) (14 con) (18 reg)
 
 (4 typ) (6 reg) (9 fun) (11 reg) (14 typ) (16 reg) (17 var) (18 reg) (32 cmt)
 (0 reg)
-
+(4 typ) (7 reg) (9 fun) (11 reg) (14 typ) (17 reg) (18 var) (19 reg)
 
 (14 con) (18 reg) (32 cmt)
 (0 reg) (14 con) (18 reg) (32 cmt)
