@@ -731,7 +731,8 @@ This function is called from the hook `before-hack-local-variables-hook'."
 		   (c-count-cfss file-local-variables-alist))
 		  (cfs-in-dir-count (c-count-cfss dir-local-variables-alist)))
 	      (c-set-style stile
-			   (= cfs-in-file-and-dir-count cfs-in-dir-count)))
+			   (and (= cfs-in-file-and-dir-count cfs-in-dir-count)
+				'keep-defaults)))
 	  (c-set-style stile)))
       (when offsets
 	(mapc
