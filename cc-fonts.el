@@ -1206,19 +1206,7 @@ casts and declarations are fontified.  Used on level 2 and higher."
 			   'font-lock-keyword-face)
 		       (looking-at c-not-decl-init-keywords))
 		  (and c-macro-with-semi-re
-		       (looking-at c-macro-with-semi-re)) ; 2008-11-04
-		  (save-excursion ; A construct after a ; in a `for' statement
-				  ; can't be a declaration.
-		    (and (c-go-up-list-backward)
-			 (eq (char-after) ?\()
-			 (progn (c-backward-syntactic-ws)
-				(c-simple-skip-symbol-backward))
-			 (looking-at c-paren-stmt-key)
-			 (progn (goto-char match-pos)
-				(while (and (eq (char-before) ?\))
-					    (c-go-list-backward))
-				  (c-backward-syntactic-ws))
-				(eq (char-before) ?\;)))))
+		       (looking-at c-macro-with-semi-re))) ; 2008-11-04
 	      ;; Don't do anything more if we're looking at something that
 	      ;; can't start a declaration.
 	      t
@@ -1349,6 +1337,32 @@ casts and declarations are fontified.  Used on level 2 and higher."
 		(when (> (point) max-type-decl-end)
 		  (setq max-type-decl-end (point))))
 
+	      ;; Do we have an expression as the second or third clause of
+	      ;; a "for" paren expression?
+	      (if (save-excursion
+		    (and
+		     (car (cddr decl-or-cast)) ; maybe-expression flag.
+		     (goto-char start-pos)
+		     (c-go-up-list-backward)
+		     (eq (char-after) ?\()
+		     (progn (c-backward-syntactic-ws)
+			    (c-simple-skip-symbol-backward))
+		     (looking-at c-paren-stmt-key)
+		     (progn (goto-char match-pos)
+			    (while (and (eq (char-before) ?\))
+					(c-go-list-backward))
+			      (c-backward-syntactic-ws))
+			    (eq (char-before) ?\;))))
+		  ;; We've got an expression in "for" parens.  Remove the
+		  ;; "type" that would spuriously get fontified.
+		  (let ((elt (and (consp c-record-type-identifiers)
+				  (assq (cadr (cddr decl-or-cast))
+					c-record-type-identifiers))))
+		    (when elt
+		      (setq c-record-type-identifiers
+			    (c-delq-from-dotted-list
+			     elt c-record-type-identifiers)))
+		    t)
 	      ;; Back up to the type to fontify the declarator(s).
 	      (goto-char (car decl-or-cast))
 
@@ -1374,17 +1388,17 @@ casts and declarations are fontified.  Used on level 2 and higher."
 		    (c-backward-syntactic-ws)
 		    (unless (bobp)
 		      (c-put-char-property (1- (point)) 'c-type
-					   (if (cdr decl-or-cast)
+					   (if (cadr decl-or-cast)
 					       'c-decl-type-start
 					     'c-decl-id-start)))))
 
 		(c-font-lock-declarators
-		 (point-max) decl-list (cdr decl-or-cast)))
+		 (point-max) decl-list (cadr decl-or-cast)))
 
 	      ;; A declaration has been successfully identified, so do all the
 	      ;; fontification of types and refs that've been recorded.
 	      (c-fontify-recorded-types-and-refs)
-	      nil)
+	      nil))
 
 	     ;; Restore point, since at this point in the code it has been
 	     ;; left undefined by c-forward-decl-or-cast-1 above.
