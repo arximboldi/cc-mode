@@ -600,7 +600,6 @@ that requires a literal mode spec at compile time."
 				     (not (string-equal c-indentation-style
 							style)))))))
   (c-setup-paragraph-variables)
-  (c-make-noise-macro-regexps)
 
   ;; we have to do something special for c-offsets-alist so that the
   ;; buffer local value has its own alist structure.
@@ -1461,11 +1460,12 @@ Key bindings:
 	abbrev-mode t)
   (use-local-map c-mode-map)
   (c-init-language-vars-for 'c-mode)
-  (c-make-macro-with-semi-re) ; matches macro names whose expansion ends with ;
   (c-common-init 'c-mode)
   (easy-menu-add c-c-menu)
   (cc-imenu-init cc-imenu-c-generic-expression)
   (c-run-mode-hooks 'c-mode-common-hook 'c-mode-hook)
+  (c-make-noise-macro-regexps)
+  (c-make-macro-with-semi-re)
   (c-update-modeline))
 
 
@@ -1525,11 +1525,12 @@ Key bindings:
 	abbrev-mode t)
   (use-local-map c++-mode-map)
   (c-init-language-vars-for 'c++-mode)
-  (c-make-macro-with-semi-re) ; matches macro names whose expansion ends with ;
   (c-common-init 'c++-mode)
   (easy-menu-add c-c++-menu)
   (cc-imenu-init cc-imenu-c++-generic-expression)
   (c-run-mode-hooks 'c-mode-common-hook 'c++-mode-hook)
+  (c-make-noise-macro-regexps)
+  (c-make-macro-with-semi-re)
   (c-update-modeline))
 
 
@@ -1587,11 +1588,12 @@ Key bindings:
 	abbrev-mode t)
   (use-local-map objc-mode-map)
   (c-init-language-vars-for 'objc-mode)
-  (c-make-macro-with-semi-re) ; matches macro names whose expansion ends with ;
   (c-common-init 'objc-mode)
   (easy-menu-add c-objc-menu)
   (cc-imenu-init nil 'cc-imenu-objc-function)
   (c-run-mode-hooks 'c-mode-common-hook 'objc-mode-hook)
+  (c-make-noise-macro-regexps)
+  (c-make-macro-with-semi-re)
   (c-update-modeline))
 
 
@@ -1850,7 +1852,6 @@ Key bindings:
   (c-init-language-vars-for 'awk-mode)
   (c-common-init 'awk-mode)
   (c-awk-unstick-NL-prop)
-
   (c-run-mode-hooks 'c-mode-common-hook 'awk-mode-hook)
   (c-update-modeline))
 
