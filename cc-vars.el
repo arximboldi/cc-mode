@@ -239,7 +239,20 @@ See `c-offsets-alist'."
 	       (setq offset (cdr offset)))
 	     (null offset)))))
 
+(defun c-string-list-p (val)
+  "Return non-nil if VAL is a list of strings."
+  (and
+   (listp val)
+   (catch 'string
+     (dolist (elt val)
+       (if (not (stringp elt))
+	   (throw 'string nil)))
+     t)))
 
+(defun c-string-or-string-list-p (val)
+  "Return non-nil if VAL is a string or a list of strings."
+  (or (stringp val)
+      (c-string-list-p val)))
 
 ;;; User variables
 
@@ -1631,9 +1644,10 @@ identifiers.
 
 If you change this variable's value, call the function
 `c-make-noise-macro-regexps' to set the necessary internal variables (or do
-this implicitly by reinitialising C/C++/Objc Mode on any buffer)."
+this implicitly by reinitializing C/C++/Objc Mode on any buffer)."
   :type '(repeat :tag "List of names" string)
   :group 'c)
+(put 'c-noise-macro-names 'safe-local-variable #'c-string-list-p)
 
 (defcustom c-noise-macro-with-parens-names nil
   "A list of names of macros \(or compiler extensions like \"__attribute__\")
@@ -1641,6 +1655,7 @@ which optionally have arguments in parentheses, and which expand to nothing.
 These are recognized by CC Mode only in declarations."
   :type '(regexp :tag "List of names (possibly empty)" string)
   :group 'c)
+(put 'c-noise-macro-with-parens-names 'safe-local-variable #'c-string-list-p)
 
 (defun c-make-noise-macro-regexps ()
   ;; Convert `c-noise-macro-names' and `c-noise-macro-with-parens-names' into
@@ -1694,7 +1709,7 @@ c-noise-macro-names is invalid: %s" c-noise-macro-names)))))
 	  (t (error "c-make-macro-with-semi-re: invalid \
 c-macro-names-with-semicolon: %s"
 		    c-macro-names-with-semicolon))))))
-    
+
 (defvar c-macro-names-with-semicolon
   '("Q_OBJECT" "Q_PROPERTY" "Q_DECLARE" "Q_ENUMS")
   "List of #defined symbols whose expansion ends with a semicolon.
@@ -1712,6 +1727,8 @@ variables.
 Note that currently \(2008-11-04) this variable is a prototype,
 and is likely to disappear or change its form soon.")
 (make-variable-buffer-local 'c-macro-names-with-semicolon)
+(put 'c-macro-names-with-semicolon 'safe-local-variable
+     #'c-string-or-string-list-p)
 
 (defvar c-file-style nil
   "Variable interface for setting style via File Local Variables.
