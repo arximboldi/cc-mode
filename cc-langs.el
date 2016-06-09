@@ -457,9 +457,12 @@ so that all identifiers are recognized as words.")
   ;; The value here may be a list of functions or a single function.
   t nil
   c++ '(c-extend-region-for-CPP
+	c-before-change-check-raw-strings
 	c-before-change-check-<>-operators
+	c-depropertize-CPP
 	c-invalidate-macro-cache)
   (c objc) '(c-extend-region-for-CPP
+	     c-depropertize-CPP
 	     c-invalidate-macro-cache)
   ;; java 'c-before-change-check-<>-operators
   awk 'c-awk-record-region-clear-NL)
@@ -493,6 +496,7 @@ parameters \(point-min) and \(point-max).")
 	     c-neutralize-syntax-in-and-mark-CPP
 	     c-change-expand-fl-region)
   c++ '(c-extend-font-lock-region-for-macros
+	c-after-change-re-mark-raw-strings
 	c-neutralize-syntax-in-and-mark-CPP
 	c-restore-<>-properties
 	c-change-expand-fl-region)
