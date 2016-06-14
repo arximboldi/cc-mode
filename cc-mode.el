@@ -1366,7 +1366,8 @@ This function is called from `c-common-init', once per mode initialization."
   ;; Of the seven CC Mode languages, currently (2009-05) only C, C++,
   ;; Objc (the languages with #define) and AWK Mode make non-null use of
   ;; this function.
-  (when (eq font-lock-support-mode 'jit-lock-mode)
+  (when (and (boundp 'font-lock-support-mode)
+	     (eq font-lock-support-mode 'jit-lock-mode))
     (save-restriction
       (widen)
       (c-save-buffer-state () ; Protect the undo-list from put-text-property.

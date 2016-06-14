@@ -1011,13 +1011,11 @@ casts and declarations are fontified.  Used on level 2 and higher."
 
   ;;(message "c-font-lock-declarators from %s to %s" (point) limit)
   (c-fontify-types-and-refs
-      ((pos (point)) next-pos id-start id-end
+      ((pos (point)) next-pos id-start
        decl-res
-       paren-depth
        id-face got-type got-init
        c-last-identifier-range
-       (separator-prop (if types 'c-decl-type-start 'c-decl-id-start))
-       brackets-after-id)
+       (separator-prop (if types 'c-decl-type-start 'c-decl-id-start)))
 
     ;; The following `while' fontifies a single declarator id each time round.
     ;; It loops only when LIST is non-nil.
@@ -1026,7 +1024,7 @@ casts and declarations are fontified.  Used on level 2 and higher."
       (setq next-pos (point)
 	    id-start (car decl-res)
 	    id-face (if (and (eq (char-after) ?\()
-			     (not (car (cddr decl-res))) ; brackets-after-id
+			     (not (car (cddr decl-res)))
 			     (or (not (c-major-mode-is 'c++-mode))
 				 (save-excursion
 				   (let (c-last-identifier-range)
@@ -1558,7 +1556,7 @@ casts and declarations are fontified.  Used on level 2 and higher."
   ;; Fontification".
   (let* ((paren-state (c-parse-state))
 	 (decl-search-lim (c-determine-limit 1000))
-	 decl-context in-typedef ps-elt)
+	 in-typedef ps-elt)
     ;; Are we in any nested struct/union/class/etc. braces?
     (while paren-state
       (setq ps-elt (car paren-state)
@@ -1566,8 +1564,8 @@ casts and declarations are fontified.  Used on level 2 and higher."
       (when (and (atom ps-elt)
 		 (eq (char-after ps-elt) ?\{))
 	(goto-char ps-elt)
-	(setq decl-context (c-beginning-of-decl-1 decl-search-lim)
-	      in-typedef (looking-at c-typedef-key))
+	(c-beginning-of-decl-1 decl-search-lim)
+	(setq in-typedef (looking-at c-typedef-key))
 	(if in-typedef (c-forward-token-2))
 	(when (and c-opt-block-decls-with-vars-key
 		   (looking-at c-opt-block-decls-with-vars-key))
@@ -1585,7 +1583,7 @@ casts and declarations are fontified.  Used on level 2 and higher."
   ;; prevent a repeat invocation.  See elisp/lispref page "Search-based
   ;; Fontification".
   (while (search-forward-regexp
-	  "R\\(\"\\)\\([^ ()\\\n\r\t]\\{,16\\}\\)(" limit t)
+	  "R\\(\"\\)\\([^ ()\\\n\r\t]\\{0,16\\}\\)(" limit t)
     (when
 	(or (and (eobp)
 		 (eq (c-get-char-property (1- (point)) 'face)

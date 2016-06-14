@@ -1,15 +1,15 @@
 (0 cmt)
 
-(0 key) (4 reg) (5 typ) (9 reg)
+(0 key) (4 reg) (5 var) (9 reg)
 
-(0 key) (4 reg) (5 typ) (9 reg)
-
-
-(0 key) (4 reg) (5 typ) (9 reg)
+(0 key) (4 reg) (5 var) (9 reg)
 
 
+(0 key) (4 reg) (5 var) (9 reg)
 
-(0 key) (4 reg) (5 typ) (11 reg)
+
+
+(0 key) (4 reg) (5 var) (11 reg)
 
 
 

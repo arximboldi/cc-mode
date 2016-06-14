@@ -1559,7 +1559,6 @@ defun."
   (c-save-buffer-state
       (beginning-of-defun-function
        end-of-defun-function
-       (start (point))
        (paren-state (c-parse-state))
        (orig-point-min (point-min)) (orig-point-max (point-max))
        lim			    ; Position of { which has been widened to.
@@ -1678,7 +1677,6 @@ the open-parenthesis that starts a defun; see `beginning-of-defun'."
   (c-save-buffer-state
       (beginning-of-defun-function
        end-of-defun-function
-       (start (point))
        (paren-state (c-parse-state))
        (orig-point-min (point-min)) (orig-point-max (point-max))
        lim

@@ -1454,8 +1454,7 @@ been put there by c-put-char-property.  POINT remains unchanged."
   ;; Do a (scan-lists FROM 1 1).  Any finishing position which either (i) is
   ;; determined by and angle bracket; or (ii) is inside a macro whose start
   ;; isn't POINT-MACRO-START doesn't count as a finishing position.
-  `(let ((here (point))
-	 (pos (scan-lists ,from 1 1)))
+  `(let ((pos (scan-lists ,from 1 1)))
      (while (eq (char-before pos) ?>)
        (setq pos (scan-lists pos 1 1)))
      pos))
@@ -1464,8 +1463,7 @@ been put there by c-put-char-property.  POINT remains unchanged."
   ;; Do a (scan-lists FROM 1 -1).  Any finishing position which either (i) is
   ;; determined by and angle bracket; or (ii) is inside a macro whose start
   ;; isn't POINT-MACRO-START doesn't count as a finishing position.
-  `(let ((here (point))
-	 (pos (scan-lists ,from 1 -1)))
+  `(let ((pos (scan-lists ,from 1 -1)))
      (while (eq (char-before pos) ?<)
        (setq pos (scan-lists pos 1 1))
        (setq pos (scan-lists pos 1 -1)))
@@ -1475,8 +1473,7 @@ been put there by c-put-char-property.  POINT remains unchanged."
   ;; Do a (scan-lists FROM -1 1).  Any finishing position which either (i) is
   ;; determined by and angle bracket; or (ii) is inside a macro whose start
   ;; isn't POINT-MACRO-START doesn't count as a finishing position.
-  `(let ((here (point))
-	 (pos (scan-lists ,from -1 1)))
+  `(let ((pos (scan-lists ,from -1 1)))
      (while (eq (char-after pos) ?<)
        (setq pos (scan-lists pos -1 1)))
      pos))
@@ -1485,8 +1482,7 @@ been put there by c-put-char-property.  POINT remains unchanged."
   ;; Do a (scan-lists FROM -1 -1).  Any finishing position which either (i) is
   ;; determined by and angle bracket; or (ii) is inside a macro whose start
   ;; isn't POINT-MACRO-START doesn't count as a finishing position.
-  `(let ((here (point))
-	 (pos (scan-lists ,from -1 -1)))
+  `(let ((pos (scan-lists ,from -1 -1)))
      (while (eq (char-after pos) ?>)
        (setq pos (scan-lists pos -1 1))
        (setq pos (scan-lists pos -1 -1)))
