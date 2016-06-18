@@ -749,11 +749,16 @@ to be set as a file local variable.")
 
 (defun do-one-test (filename &optional no-error collect-tests)
   (interactive "fFile to test: ")
+  (setq font-lock-maximum-decoration t)	; This works better here than as a
+	; let-bound variable; the latter puts out a warning message about
+	; making a locally bound variable over a let-bound one when
+	; `font-lock-maximum-decoration' appears in a file's local variable
+	; list.
 
   (let ((default-directory cc-test-dir)
 	(save-buf (current-buffer))
 	(save-point (point))
-	(font-lock-maximum-decoration t)
+	;(font-lock-maximum-decoration t)
 	(font-lock-global-modes nil)
 	(enable-local-variables
 	 (if (> emacs-major-version 21) ':all t))) ; disable Emacs 22's "safety" features.
