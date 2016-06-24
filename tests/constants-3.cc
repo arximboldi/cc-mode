@@ -1,0 +1,10 @@
+unsigned int foo = 4'294'967'295;
+unsigned int foo = '4294'967295;
+unsigned int bar = 0xcde'adb'eef;
+// unsigned int quux = 0xDEAD'BEEF;
+unsigned int baz = 0xd'e'a'd'b'e'e'f;
+unsigned char aye = 0b0110'0001;
+char foobar [] = "int foobar = 0x8000'0000;";
+unsigned int bar = 0xde'adb''eef;
+unsigned int bar = 0x'de'adb'eef';
+unsigned char Aye = 0B0100'0001;
