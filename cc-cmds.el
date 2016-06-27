@@ -1571,8 +1571,8 @@ defun."
 
       ;; Move back out of any macro/comment/string we happen to be in.
       (c-beginning-of-macro)
-      (setq pos (c-literal-limits))
-      (if pos (goto-char (car pos)))
+      (setq pos (c-literal-start))
+      (if pos (goto-char pos))
 
       (setq where (c-where-wrt-brace-construct))
 
@@ -1689,8 +1689,8 @@ the open-parenthesis that starts a defun; see `beginning-of-defun'."
 
       ;; Move back out of any macro/comment/string we happen to be in.
       (c-beginning-of-macro)
-      (setq pos (c-literal-limits))
-      (if pos (goto-char (car pos)))
+      (setq pos (c-literal-start))
+      (if pos (goto-char pos))
 
       (setq where (c-where-wrt-brace-construct))
 
@@ -1748,8 +1748,8 @@ with a brace block."
       (save-excursion
 	;; Move back out of any macro/comment/string we happen to be in.
 	(c-beginning-of-macro)
-	(setq pos (c-literal-limits))
-	(if pos (goto-char (car pos)))
+	(setq pos (c-literal-start))
+	(if pos (goto-char pos))
 
 	(setq where (c-where-wrt-brace-construct))
 
@@ -1834,9 +1834,9 @@ with a brace block."
 			    (setq lim (c-safe-position (point) paren-state))
 			    t)
 		    ;; At top level.  Make sure we aren't inside a literal.
-		    (setq pos (c-literal-limits
+		    (setq pos (c-literal-start
 			       (c-safe-position (point) paren-state)))
-		    (if pos (goto-char (car pos))))
+		    (if pos (goto-char pos)))
 
 		  (when (c-beginning-of-macro)
 		    (throw 'exit
