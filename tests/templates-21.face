@@ -1,0 +1,12 @@
+(0 key) (8 reg) (10 key) (18 reg) (19 typ) (20 reg) (22 key) (30 reg) (34 typ) (35 reg)
+(0 key) (5 reg) (6 typ) (9 reg)
+
+
+(0 key) (8 reg) (9 key) (17 reg) (21 typ) (25 reg) (27 key) (33 reg) (34 typ) (38 reg) (39 fun) (45 reg) (46 typ) (50 reg) (56 var) (60 reg)
+
+
+
+(0 key) (8 reg) (10 key) (18 reg) (22 typ) (33 reg) (35 key) (40 reg) (41 typ) (50 reg) (53 key) (59 reg) (60 typ) (71 reg)
+(0 key) (6 reg)
+(4 fun) (13 reg) (15 typ) (26 reg) (32 var) (44 reg)
+
