@@ -864,7 +864,7 @@ Note that the style variables are always made local to the buffer."
   ;; Is the primitive which invoked `before-change-functions' or
   ;; `after-change-functions' one which merely changes text properties?  This
   ;; function must be called directly from a member of one of the above hooks.
-  ;; 
+  ;;
   ;; In the following call, frame 0 is `backtrace-frame', frame 1 is
   ;; `c-called-from-text-property-change-p', frame 2 is
   ;; `c-before/after-change', frame 3 is the primitive invoking the change
@@ -896,7 +896,7 @@ Note that the style variables are always made local to the buffer."
       (c-end-of-macro))
     (if (and ss-found (> (point) end))
 	(c-clear-char-property-with-value m-beg (point) 'syntax-table '(1)))
-    
+
     (while (and (< (point) c-new-END)
 		(search-forward-regexp c-anchored-cpp-prefix c-new-END 'bound))
       (goto-char (match-beginning 1))
@@ -907,7 +907,7 @@ Note that the style variables are always made local to the buffer."
 
 (defun c-extend-region-for-CPP (beg end)
   ;; Adjust `c-new-BEG', `c-new-END' respectively to the beginning and end of
-  ;; any preprocessor construct they may be in. 
+  ;; any preprocessor construct they may be in.
   ;;
   ;; Point is undefined both before and after this function call; the buffer
   ;; has already been widened, and match-data saved.  The return value is
@@ -1122,6 +1122,38 @@ Note that the style variables are always made local to the buffer."
       (goto-char try-end)
       (setq num-begin (point)))))
 
+;; The following doesn't seem needed at the moment (2016-08-15).
+;; (defun c-before-after-change-extend-region-for-lambda-capture
+;;     (_beg _end &optional _old-len)
+;;   ;; In C++ Mode, extend the region (c-new-BEG c-new-END) to cover any lambda
+;;   ;; function capture lists we happen to be inside.  This function is expected
+;;   ;; to be called both as a before-change and after change function.
+;;   ;;
+;;   ;; Note that these things _might_ be nested, with a capture list looking
+;;   ;; like:
+;;   ;;
+;;   ;;     [ ...., &foo = [..](){...}(..), ... ]
+;;   ;;
+;;   ;; .  What a wonderful language is C++.  ;-)
+;;   (c-save-buffer-state (paren-state pos)
+;;     (goto-char c-new-BEG)
+;;     (setq paren-state (c-parse-state))
+;;     (while (setq pos (c-pull-open-brace paren-state))
+;;       (goto-char pos)
+;;       (when (c-looking-at-c++-lambda-capture-list)
+;; 	(setq c-new-BEG (min c-new-BEG pos))
+;; 	(if (c-go-list-forward)
+;; 	    (setq c-new-END (max c-new-END (point))))))
+
+;;     (goto-char c-new-END)
+;;     (setq paren-state (c-parse-state))
+;;     (while (setq pos (c-pull-open-brace paren-state))
+;;       (goto-char pos)
+;;       (when (c-looking-at-c++-lambda-capture-list)
+;; 	(setq c-new-BEG (min c-new-BEG pos))
+;; 	(if (c-go-list-forward)
+;; 	    (setq c-new-END (max c-new-END (point))))))))
+
 (defun c-before-change (beg end)
   ;; Function to be put in `before-change-functions'.  Primarily, this calls
   ;; the language dependent `c-get-state-before-change-functions'.  It is
@@ -1305,11 +1337,23 @@ Note that the style variables are always made local to the buffer."
   ;; lock context (etc.) fontification.
   (let ((lit-start (c-literal-start))
 	(new-pos pos)
+	capture-opener
 	bod-lim bo-decl)
     (goto-char (c-point 'bol new-pos))
     (when lit-start			; Comment or string.
       (goto-char lit-start))
     (setq bod-lim (c-determine-limit 500))
+
+    ;; In C++ Mode, first check if we are within a (possibly nested) lambda
+    ;; form capture list.
+    (when (c-major-mode-is 'c++-mode)
+      (let ((paren-state (c-parse-state))
+	    opener)
+	(save-excursion
+	  (while (setq opener (c-pull-open-brace paren-state))
+	    (goto-char opener)
+	    (if (c-looking-at-c++-lambda-capture-list)
+		(setq capture-opener (point)))))))
 
     (while
 	;; Go to a less nested declaration each time round this loop.
@@ -1337,6 +1381,8 @@ Note that the style variables are always made local to the buffer."
 			     c-<-as-paren-syntax)))))
 	 (not (bobp)))
       (backward-char))			; back over (, [, <.
+    (when (and capture-opener (< capture-opener new-pos))
+      (setq new-pos capture-opener))
     (and (/= new-pos pos) new-pos)))
 
 (defun c-change-expand-fl-region (beg end old-len)
@@ -1391,7 +1437,7 @@ Note that the style variables are always made local to the buffer."
   ;;
   ;;
   ;;     void myfunc(T* p) {}
-  ;; 
+  ;;
   ;; Type a space in the first blank line, and the fontification of the next
   ;; line was fouled up by context fontification.
   (let (new-beg new-end new-region case-fold-search)
