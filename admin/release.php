@@ -4,8 +4,8 @@
   include ("header.h");
 ?>
 
-<p>The current release is 5.32.3. <a
-href="http://sourceforge.net/projects/cc-mode/files/cc-mode/5.32.3/cc-mode-5.32.2.tar.gz/download">Download</a>
+<p>The current release is 5.33. <a
+href="http://sourceforge.net/projects/cc-mode/files/cc-mode/5.33/cc-mode-5.33.tar.gz/download">Download</a>
 the source package to upgrade the version that came with your Emacs or
 XEmacs dist.  Installation instructions are available in the <a
 href="src/README">README</a> file in the tarball and <a
@@ -19,10 +19,10 @@ either <a href="html-manual/index.html">browse</a> it on-line or grab
 one of the <a href="manual/">pre-formatted</a> documents generated
 from the texinfo source.
 
-<p>See the list of <a href="changes-532.php">user visible changes</a>
-since 5.31.3 and earlier versions, and the <a
+<p>See the list of <a href="changes-533.php">user visible changes</a>
+since 5.32.5 and earlier versions, and the <a
 href="src/ChangeLog">ChangeLog file</a> for details about the bugs
-fixed in any patch releases made since the first 5.32 release.
+fixed in any patch releases made since the first 5.33 release.
 
 <h3>Notes</h3>
 

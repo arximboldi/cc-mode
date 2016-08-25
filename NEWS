@@ -1,5 +1,40 @@
 CC Mode NEWS -- user visible changes.  -*- outline -*-
 
+* Changes in 5.33
+
+This version contains a few new big features, significant interal improvements
+and many bug fixes.
+
+** Emacs 22 is no longer supported, although CC Mode might well still work with
+it.  The minimum versions supported are Emacs 23.2 and the latest versions of
+XEmacs 21.4 and XEmacs 21.5.
+
+** The obsolete files cc-compat.el and cc-lobotomy.el have been removed.
+
+** C++11 should now be fully supported, along with some features of C++14:
+*** Uniform initialization
+*** Lambda functions
+*** Parameter packs
+*** Raw strings
+*** Separators in integer literals
+*** ">>" as a double template ender
+*** etc.
+
+** Font locking has been accelerated.
+
+** "Noise Macros" can be registered, for correct analysis of declarations
+containing them.  These are identifiers, for example macros or attributes,
+possibly with parenthesis lists, which have no effect on the syntax of the
+containing declaration.
+
+** It is no longer necessary or desirable to call `c-make-macro-with-semi-re'
+after setting up the variables controlling this feature.
+
+** CC Mode now respects the user's setting of
+`open-paren-in-column-0-is-defun-start' rather than overriding it.
+
+** Many bugs have been fixed.
+
 * Changes in 5.32
 
 This version contains few, but big, new features, and significant internal

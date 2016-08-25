@@ -1,4 +1,4 @@
-README for CC Mode 5.32
+README for CC Mode 5.33
 Current maintainer : Alan Mackenzie
 Contact address    : bug-cc-mode@gnu.org
 
@@ -11,13 +11,13 @@ INTRODUCTION
     Please read the cc-mode.texi manual for details on using CC Mode.
     This is available on-line from:
 
-        <http://cc-mode.sourceforge.net/cc-mode.html>
+        <http://cc-mode.sourceforge.net/html-manual/index.html>
 
-    As of this writing (August 2011), CC Mode currently works
-    out of the box with XEmacs versions 21.4 and later, and with Emacs
-    versions 22 and later.  (It might well still work with some earlier
-    versions and will very likely work with later versions too, when
-    they become available.)
+    As of this writing (August 2016), CC Mode currently works out of
+    the box with XEmacs versions 21.4 (latest release) and later, and
+    with Emacs versions 23.2 and later.  (It might well still work
+    with some earlier versions and will very likely work with later
+    versions too, when they become available.)
 
 MORE INFORMATION
 
@@ -39,8 +39,8 @@ MANUALS
     differences between them are the targets of some cross references
     within the manual.
 
-    To build the manual yourself, you will need Texinfo 4.7 or later.
-    Simply type:
+    To build the manual yourself, you will need Texinfo 4.7 or later
+    or Texinfo 5.x or later.  For 4.x (recommended), Simply type:
 
         % makeinfo cc-mode.texi                   # For GNU Emacs
     or
@@ -49,6 +49,8 @@ MANUALS
     To make the DVI version, type:
 
         % texi2dvi cc-mode.texi
+
+    If you're using Texinfo 5.x or later, see its manual.
 
 INSTALLATION
 
@@ -72,8 +74,8 @@ INSTALLATION
 
     To compile CC Mode from the shell:
 
-        % cd /path/to/cc-mode
-        % $(EMACS) -batch -no-site-file -q -f batch-byte-compile cc-*.el
+        $ cd /path/to/cc-mode
+        $ $(EMACS) -batch -no-site-file -q -f batch-byte-compile cc-*.el
 
     where $(EMACS) is either emacs or xemacs depending on the flavor
     you use.  Note that the byte compiled files from one version of
