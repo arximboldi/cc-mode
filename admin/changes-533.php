@@ -9,7 +9,7 @@
 5.32</a>.
 
 <p><a
-href="http://prdownloads.sourceforge.net/cc-mode/cc-mode-5.33.tar.gz">Download</a>
+href="http://sourceforge.net/projects/cc-mode/files/cc-mode/5.33/cc-mode-5.33.tar.gz/download">Download</a>
 this CC Mode version.</p>
 
 <p>This version contains a few new big features,significant internal

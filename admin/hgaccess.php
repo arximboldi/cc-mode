@@ -28,7 +28,7 @@ considered too risky to be allowed into the patch branch.
 <p>Alternatively, you can switch to using the patch branch, the one with just bug
 fixes in it.  Use this command:
 
-<pre>hg update Branch_5_32</pre>
+<pre>hg update Branch_5_33</pre>
 
 <p>To browse the project's history and current state online, use
 <a href="https://sourceforge.net/p/cc-mode/cc-mode/ci/default/tree/">this</a>.
