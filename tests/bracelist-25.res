@@ -60,7 +60,7 @@
 ((topmost-intro-cont <1,4>))
 ((template-args-cont <2,4> <1,4>))
 ((inclass <7,0>) (topmost-intro <1,0>))
-((inclass <8,0>) (inline-open))
+((brace-list-open <1,4>))
 ((inclass <9,0>) (inline-open))
 ((class-close <10,0>))
 ((topmost-intro <1,0>))
