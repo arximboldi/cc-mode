@@ -900,7 +900,8 @@ casts and declarations are fontified.  Used on level 2 and higher."
 		  (c-get-char-property (1- (point)) 'c-type)))))
     (when (memq prop '(c-decl-id-start c-decl-type-start))
       (c-forward-syntactic-ws limit)
-      (c-font-lock-declarators limit t (eq prop 'c-decl-type-start))))
+      (c-font-lock-declarators limit t (eq prop 'c-decl-type-start)
+			       (c-bs-at-toplevel-p (point)))))
 
   (setq c-font-lock-context ;; (c-guess-font-lock-context)
 	(save-excursion
@@ -992,7 +993,7 @@ casts and declarations are fontified.  Used on level 2 and higher."
 	  (goto-char pos)))))
   nil)
 
-(defun c-font-lock-declarators (limit list types)
+(defun c-font-lock-declarators (limit list types not-top)
   ;; Assuming the point is at the start of a declarator in a declaration,
   ;; fontify the identifier it declares.  (If TYPES is set, it does this via
   ;; the macro `c-fontify-types-and-refs'.)
@@ -1002,7 +1003,9 @@ casts and declarations are fontified.  Used on level 2 and higher."
   ;; additionally, mark the commas with c-type property 'c-decl-id-start or
   ;; 'c-decl-type-start (according to TYPES).  Stop at LIMIT.
   ;;
-  ;; If TYPES is non-nil, fontify all identifiers as types.
+  ;; If TYPES is non-nil, fontify all identifiers as types.  If NOT-TOP is
+  ;; non-nil, we are not at the top-level ("top-level" includes being directly
+  ;; inside a class or namespace, etc.).
   ;;
   ;; Nil is always returned.  The function leaves point at the delimiter after
   ;; the last declarator it processes.
@@ -1024,6 +1027,14 @@ casts and declarations are fontified.  Used on level 2 and higher."
       (setq next-pos (point)
 	    id-start (car decl-res)
 	    id-face (if (and (eq (char-after) ?\()
+			     (or (not (c-major-mode-is 'c++-mode))
+				 (not not-top)
+				 (car (cddr (cddr decl-res))) ; Id is in
+							      ; parens, etc.
+				 (save-excursion
+				   (forward-char)
+				   (c-forward-syntactic-ws)
+				   (looking-at "[*&]")))
 			     (not (car (cddr decl-res)))
 			     (or (not (c-major-mode-is 'c++-mode))
 				 (save-excursion
@@ -1198,7 +1209,7 @@ casts and declarations are fontified.  Used on level 2 and higher."
        c-decl-start-re
        (eval c-maybe-decl-faces)
 
-       (lambda (match-pos inside-macro)
+       (lambda (match-pos inside-macro &optional toplev)
 	 ;; Note to maintainers: don't use `limit' inside this lambda form;
 	 ;; c-find-decl-spots sometimes narrows to less than `limit'.
 	 (setq start-pos (point))
@@ -1222,7 +1233,7 @@ casts and declarations are fontified.  Used on level 2 and higher."
 	    (let ((type (and (> match-pos (point-min))
 			     (c-get-char-property (1- match-pos) 'c-type))))
 	      (cond ((not (memq (char-before match-pos) '(?\( ?, ?\[ ?< ?{)))
-		     (setq context nil
+		     (setq context (and toplev 'top)
 			   c-restricted-<>-arglists nil))
 		    ;; A control flow expression or a decltype
 		    ((and (eq (char-before match-pos) ?\()
@@ -1272,7 +1283,7 @@ casts and declarations are fontified.  Used on level 2 and higher."
 					  'c-not-decl))
 		    ;; We're inside an "ordinary" open brace.
 		    ((eq (char-before match-pos) ?{)
-		     (setq context nil
+		     (setq context (and toplev 'top)
 			   c-restricted-<>-arglists nil))
 		    ;; Inside an angle bracket arglist.
 		    ((or (eq type 'c-<>-arg-sep)
@@ -1410,7 +1421,7 @@ casts and declarations are fontified.  Used on level 2 and higher."
 		  (goto-char (car decl-or-cast))
 
 		  (let ((decl-list
-			 (if context
+			 (if (not (memq context '(nil top)))
 			     ;; Should normally not fontify a list of
 			     ;; declarators inside an arglist, but the first
 			     ;; argument in the ';' separated list of a "for"
@@ -1436,7 +1447,8 @@ casts and declarations are fontified.  Used on level 2 and higher."
 						 'c-decl-id-start)))))
 
 		    (c-font-lock-declarators
-		     (min limit (point-max)) decl-list (cadr decl-or-cast)))
+		     (min limit (point-max)) decl-list
+		     (cadr decl-or-cast) (not toplev)))
 
 		  ;; A declaration has been successfully identified, so do all the
 		  ;; fontification of types and refs that've been recorded.
@@ -1497,7 +1509,7 @@ casts and declarations are fontified.  Used on level 2 and higher."
       (c-put-char-property (1- (point)) 'c-type 'c-decl-id-start)
 
       (c-forward-syntactic-ws)
-      (c-font-lock-declarators limit t nil)))
+      (c-font-lock-declarators limit t nil t)))
   nil)
 
 (defun c-font-lock-cut-off-declarators (limit)
@@ -1511,6 +1523,7 @@ casts and declarations are fontified.  Used on level 2 and higher."
   ;; fontification".
   (let ((decl-search-lim (c-determine-limit 1000))
 	paren-state bod-res is-typedef encl-pos
+	(here (point))
 	c-recognize-knr-p)		; Strictly speaking, bogus, but it
 					; speeds up lisp.h tremendously.
     (save-excursion
@@ -1538,7 +1551,8 @@ casts and declarations are fontified.  Used on level 2 and higher."
 		  (c-forward-syntactic-ws))
 		;; At a real declaration?
 		(if (memq (c-forward-type t) '(t known found decltype))
-		    (c-font-lock-declarators limit t is-typedef)))))))
+		    (c-font-lock-declarators
+		     limit t is-typedef (not (c-bs-at-toplevel-p here)))))))))
     nil))
 
 (defun c-font-lock-enclosing-decls (limit)
@@ -1572,7 +1586,8 @@ casts and declarations are fontified.  Used on level 2 and higher."
 	    (goto-char ps-elt)
 	    (when (c-safe (c-forward-sexp))
 	      (c-forward-syntactic-ws)
-	      (c-font-lock-declarators limit t in-typedef))))))))
+	      (c-font-lock-declarators limit t in-typedef
+				       (not (c-bs-at-toplevel-p (point)))))))))))
 
 (defun c-font-lock-raw-strings (limit)
   ;; Fontify C++ raw strings.
@@ -1740,7 +1755,7 @@ on level 2 only and so aren't combined with `c-complex-decl-matchers'."
       (eval . (list ,(c-make-font-lock-search-function
 		      'c-known-type-key
 		      '(1 'font-lock-type-face t)
-		      '((c-font-lock-declarators limit t nil)
+		      '((c-font-lock-declarators limit t nil nil)
 			(save-match-data
 			  (goto-char (match-end 1))
 			  (c-forward-syntactic-ws))
@@ -1762,7 +1777,7 @@ on level 2 only and so aren't combined with `c-complex-decl-matchers'."
 				 "\\)"))
 		 `(,type-match
 		   'font-lock-type-face t)
-		 `((c-font-lock-declarators limit t nil)
+		 `((c-font-lock-declarators limit t nil nil)
 		   (save-match-data
 		     (goto-char (match-end ,type-match))
 		     (c-forward-syntactic-ws))
@@ -1774,7 +1789,7 @@ on level 2 only and so aren't combined with `c-complex-decl-matchers'."
 	       (concat "\\<\\("
 		       (regexp-opt (c-lang-const c-typeless-decl-kwds))
 		       "\\)\\>")
-	       '((c-font-lock-declarators limit t nil)
+	       '((c-font-lock-declarators limit t nil nil)
 		 (save-match-data
 		   (goto-char (match-end 1))
 		   (c-forward-syntactic-ws))
@@ -2013,7 +2028,7 @@ higher."
 		;; before the '{' of the enum list, to avoid searching too far.
 		"[^\]\[{};/#=]*"
 		"{")
-	       '((c-font-lock-declarators limit t nil)
+	       '((c-font-lock-declarators limit t nil t)
 		 (save-match-data
 		   (goto-char (match-end 0))
 		   (c-put-char-property (1- (point)) 'c-type
@@ -2408,7 +2423,7 @@ need for `c++-font-lock-extra-types'.")
      limit
      "[-+]"
      nil
-     (lambda (match-pos inside-macro)
+     (lambda (match-pos inside-macro &optional top-level)
        (forward-char)
        (c-font-lock-objc-method))))
   nil)
