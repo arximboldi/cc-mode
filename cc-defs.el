@@ -1213,7 +1213,7 @@ been put there by c-put-char-property.  POINT remains unchanged."
 ;; Make edebug understand the macros.
 (eval-after-load "edebug"
   '(progn
-     (def-edebug-spec cc-eval-when-compile t)
+     (def-edebug-spec cc-eval-when-compile (&rest def-form))
      (def-edebug-spec c-point t)
      (def-edebug-spec c-set-region-active t)
      (def-edebug-spec c-safe t)
