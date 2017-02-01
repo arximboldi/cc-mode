@@ -40,7 +40,7 @@
 ((arglist-close <5,4> <5,20>))
 ((stream-op <6,4>))
 ((statement <7,4>))
-((brace-list-entry <1,25>))
+((brace-list-intro <1,4>) (brace-list-entry <1,25>))
 ((brace-entry-open <2,25>))
 ((brace-list-intro <1,25>))
 ((brace-list-entry <1,29>))
