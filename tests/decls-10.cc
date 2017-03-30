@@ -25,8 +25,8 @@ int main() {
     v11 *id  (v13*x);
 
     t3 (*id) (NULL) + 1;	// Invalid.
-    t3  *id  (NULL) + 1;	// Invalid.
-    t3  (id) (NULL) + 1;
+    t3  *id  (NULL) + 1;	// Invalid.  "Asymmetry rule" fontifies t3 + id.
+    t3  (id) (NULL) + 1;	// Fontified - prev. line makes t3 a found type.
 
     v3 (*id) (NULL) + 1;
     v10 *id  (NULL) + 1;
